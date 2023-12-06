@@ -1,0 +1,43 @@
+@* template of the profile page*@
+@(comments: Seq[Post])(implicit session: Session, flash: Flash)
+
+@main("profile", session) {
+   @if(comments.isEmpty) {
+    <div class="card-body px-0 pb-0 d-flex flex-column align-items-start"><p class="card-text">
+         No comments
+    </p></div>
+   }
+   @for(comment <- comments) {
+   <div class="card-body px-0 pb-0 d-flex flex-column align-items-start" style="margin-left:10%">
+      <h2 class="small font-weight-bold">
+          @comment.userName - @comment.datePost
+      </h2>
+      <p class="card-text">
+          @comment.postText
+      </p>
+       <div class="row">
+           <a onclick='commentReply(@comment.idPost)' class="btn btn-light">
+               Comment </a>
+           <a onclick='likePost(@comment.idPost)' class="btn btn-light" >
+               <span id='like@comment.idPost'>Like (@comment.like)</span></a>
+           <a onclick='showComment(@comment.idPost)' class="btn btn-light">
+               Show Comments </a>
+           @if(session.get(models.Global.SESSION_USERNAME) != Some(comment.userName)) {
+           <a onclick='sharePost(@comment.idPost)' class="btn btn-light" >
+               <span id='share@comment.idPost'>Share</span></a>
+           }
+       </div>
+   </div>
+    <div id='postReply@comment.idPost' class="border p-3 bg-lightblue" style="display: none;">
+        <div class="row">
+            <div class="col-md-12">
+                <textarea type="text" id='textReply@comment.idPost' class="form-control" placeholder="Write a comment .." rows="3"></textarea>
+            </div>
+            <div class="col-md-12 mt-2">
+                <a class="btn btn-success btn-block">Send</a>
+            </div>
+        </div>
+    </div>
+   <div id='commentPost@comment.idPost' class="card-body px-0 pb-0 d-flex flex-column align-items-start" style="margin-left:10%"></div>
+   }
+}

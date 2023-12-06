@@ -1,0 +1,4 @@
+[0m[[0m[31merror[0m] [0m[0mD:\COMPUTER SCIENCE\1 SEMESTER\software architecture\asignment2Project\app\controllers\ConfigureController.scala:27:41: value configurePage is not a member of controllers.ReverseLoginController[0m
+[0m[[0m[31merror[0m] [0m[0m        Redirect(routes.LoginController.configurePage())[0m
+[0m[[0m[31merror[0m] [0m[0m                                        ^[0m
+[0m[[0m[31merror[0m] [0m[0mone error found[0m

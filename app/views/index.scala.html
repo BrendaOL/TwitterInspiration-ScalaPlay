@@ -1,0 +1,98 @@
+@(welcome: String, posts:Seq[Post], follows:Seq[FollowUser], hashtags: Seq[String])(implicit session: Session, flash: Flash, request: RequestHeader)
+
+  @main(welcome, session) {
+    @defining(play.core.PlayVersion.current) { version =>
+  <div class="container pt-4 pb-4">
+    <h5 class="font-weight-bold spanborder"><span>Hello!</span></h5>
+    <div class="row">
+      <div class="col-lg-7">
+        <a href='@routes.HomeController.index()' class="btn btn-primary">Date</a>
+        <a href='@routes.HomeController.indexOrderLike()' class="btn btn-outline-primary">Likes</a>
+      </div>
+      <div class="col-lg-5">
+        <div class="row">
+          <form method="post" action="@routes.HomeController.searchUser()">
+            @helper.CSRF.formField
+              <div class="col">
+                <input type="text" name="searchBar" class="form-control input-round" placeholder="Search a username/hashtag">
+                <button type="submit" class="btn btn-primary btn-round">Search</button>
+              </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-8">
+        @for(post <- posts) {
+        <div class="card border-0 mb-4 box-shadow">
+          <div class="card-body px-0 pb-0 d-flex flex-column align-items-start">
+            <h2 class="h4 font-weight-bold">
+              @post.userName - @post.datePost
+            </h2>
+            <p class="card-text">
+              @post.postText
+            </p>
+            @if(!session.get(models.Global.SESSION_USERNAME).isEmpty) {
+            <div class="row">
+              <a onclick='commentReply(@post.idPost)' class="btn btn-light" >
+                Comment </a>
+              <a onclick='likePost(@post.idPost)' class="btn btn-light" >
+                <span id='like@post.idPost'>Like (@post.like)</span></a>
+              <a onclick='showComment(@post.idPost)' class="btn btn-light" >
+                Show Comments </a>
+              <a onclick='sharePost(@post.idPost)' class="btn btn-light" >
+                <span id='share@post.idPost'>Share</span></a>
+            </div>
+            }
+          </div>
+          <div id='postReply@post.idPost' class="border p-3 bg-lightblue" style="display: none;">
+            <div class="row">
+              <div class="col-md-12">
+                <textarea type="text" id='textReply@post.idPost' class="form-control" placeholder="Write a comment .." rows="3"></textarea>
+              </div>
+              <div class="col-md-12 mt-2">
+                <a onclick='submitReply(@post.idPost)' class="btn btn-success btn-block">Send</a>
+              </div>
+            </div>
+          </div>
+          <div id='commentPost@post.idPost' class="card-body px-0 pb-0 d-flex flex-column align-items-start"></div>
+        </div>
+        }
+      </div>
+      <div class="col-lg-4">
+        <br>
+        <div class="flex-md-row mb-4 box-shadow h-xl-300">
+          <h2 class="mb-2 h6 font-weight-bold">
+            Look for more Users to follow
+          </h2>
+          <div class="mb-3 d-flex align-items-center">
+            <div class="pl-3">
+              <div class="card-text text-muted small">
+                @for(user <- follows) {
+                <a class="text-dark" href=@routes.ProfileController.userProfile(user.FollowUser)>@user.FollowUser</a>
+                <br>
+                }
+              </div>
+            </div>
+          </div>
+          <h2 class="mb-2 h6 font-weight-bold">
+            Trends
+          </h2>
+          <div class="mb-3 d-flex align-items-center">
+            <div class="pl-3">
+              <div class="card-text text-muted small">
+                @for(hashtag <- hashtags) {
+                  <a class="text-dark" href='@routes.HomeController.trends(hashtag)'>#@hashtag</a>
+                  <br>
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<script src='@routes.Assets.versioned("javascripts/personalFunctions.js")'></script>
+  <!-- End Main -->
+    }
+  }

@@ -1,0 +1,24 @@
+@* template of the share thoughts page*@
+@(postUrl: Call)(implicit session: Session, flash: Flash, request: RequestHeader)
+
+@main("Share a Thought", session) {
+<div class="container pt-4 pb-4">
+    <h2>Share to others what you are thinking</h2>
+    <form method="post" action="@routes.ShareThoughtController.shareUpdated()">
+    @helper.CSRF.formField
+    <div class="form-group">
+        <textarea class="form-control" name="Text" placeholder="Write here..." rows="6"></textarea>
+    </div>
+    <!--div class="row form-group">
+        <div class="col">
+            <h5 id="fileName">Upload an image, if you like: <span id="fileName2">++</span></h5>
+            <input type="file" name="Picture">
+            <a id="upload" class="btn btn-secondary btn-round">Upload Image</a>
+        </div>
+    </div-->
+    <input type="submit" class="btn btn-primary btn-round" value="upload"/>
+    </form>
+</div>
+<script src='@routes.Assets.versioned("javascripts/personalFunctions.js")'></script>
+}
+

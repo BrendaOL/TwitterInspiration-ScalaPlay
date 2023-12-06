@@ -1,0 +1,31 @@
+@* template of the configure of the profile page*@
+@()(implicit session: Session, flash: Flash, request: RequestHeader)
+
+@main("Configure", session) {
+<div class="container pt-4 pb-4">
+    <h2>Configuration of your profile</h2>
+    @helper.form(action = routes.ConfigureController.upload, Symbol("enctype") -> "multipart/form-data") {
+    @helper.CSRF.formField
+    <div class="row form-group">
+        <div class="col">
+            <h5>Upload an image of yourself</h5>
+            <input type="file" name="picture">
+            <input type="submit" class="btn btn-success btn-round" value="upload"/>
+        </div>
+    </div>
+    }
+    <form method="post" action="@routes.ConfigureController.configureUpdated()">
+    @helper.CSRF.formField
+    <div class="form-group">
+        <h5>Description</h5>
+        <textarea class="form-control" name="description" placeholder="Write something about yourself!, You don't need to count words" rows="4"></textarea>
+    </div>
+    <div class="form-group">
+        <h5>Cool Phrase</h5>
+        <textarea class="form-control" name="phrase" placeholder="Write a short phrase to share for others who visit your profile.." rows="2"></textarea>
+    </div>
+        <input type="submit" class="btn btn-success btn-round" value="Save"/>
+    </form>
+</div>
+}
+

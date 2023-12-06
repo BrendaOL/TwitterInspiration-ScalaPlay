@@ -1,0 +1,116 @@
+@* template of the profile page*@
+@(name: String, profile: UserProfile, follows:Seq[FollowUser], posts:Seq[Post])(implicit session: Session, flash: Flash, request: RequestHeader)
+
+@main("profile", session) {
+<div class="container">
+    <div class="jumbotron jumbotron-fluid mb-3 pt-0 pb-0 bg-lightblue position-relative">
+        <div class="pl-4 pr-0 h-100 tofront">
+            <div class="row justify-content-between">
+                <div class="col-md-6 pt-6 pb-6 align-self-center">
+                    <h1 class="secondfont mb-3 font-weight-bold">@profile.phrase</h1>
+                    @if(profile.avatar.isEmpty) {
+                    <img class="rounded-circle shadow" src='@routes.Assets.versioned("images/sal.jpg")' width="90">
+                    } else{
+                       <img class="rounded-circle shadow" src="@profile.avatar" width="90">
+                    }
+                </div>
+                <div class="col-md-6 d-none d-md-block pr-0" style='background-size:cover;background-image:url(@routes.Assets.versioned("images/BLOG5.jpg"));'>	</div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div>
+            <div class="mb-3 d-flex align-items-center">
+            </div>
+            <h1 class="mb-2 h6 font-weight-bold">
+                @name
+            </h1>
+            @if(session.get(models.Global.SESSION_USERNAME) == Some(profile.username)) {
+            <h2 class="mb-2 h6 font-weight-bold">
+                <a class="text-purple" href=@routes.ConfigureController.configurePage()>CLICK HERE! to configure your profile</a>
+            </h2>
+            } else {
+            <a onclick='followUser("@profile.username")' class="btn btn-orange" style="float:right">
+                <span id='followUserCheck'>FOLLOW ME</span></a>
+            }
+            <div class="mb-3 d-flex align-items-center">
+                <div class="pl-3">
+                    <div class="pl-3">
+                        username: @profile.username
+                    </div>
+                    <div class="card-text text-muted small">
+                        @profile.content
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-8">
+        @for(post <- posts) {
+            <!--hidden id="postID" value='@post.idPost'></hidden-->
+            <div class="card border-0 mb-4 box-shadow">
+                <div class="card-body px-0 pb-0 d-flex flex-column align-items-start">
+                    <h2 class="h4 font-weight-bold">
+                        @name - @post.datePost
+                    </h2>
+                    <p class="card-text">
+                        @post.postText
+                    </p>
+                    <div class="row">
+                        <a onclick='commentReply(@post.idPost)' class="btn btn-light" >
+                            Comment </a>
+                        <a onclick='likePost(@post.idPost)' class="btn btn-light" >
+                            <span id='like@post.idPost'>Like (@post.like)</span></a>
+                        <a onclick='showComment(@post.idPost)' class="btn btn-light" >
+                            Show Comments </a>
+                        @if(session.get(models.Global.SESSION_USERNAME) == Some(profile.username)) {
+                        <form method="post" action="@routes.ProfileController.RemovePost()">
+                            @helper.CSRF.formField
+                            <input type="hidden" name="idPostRemove" id="idPostRemove" value=@post.idPost>
+                            <button type="submit" class="btn btn-light">
+                                Remove Comment
+                            </button>
+                        </form>
+                        } else {
+                        <a onclick='sharePost(@post.idPost)' class="btn btn-light" >
+                            <span id='share@post.idPost'>Share</span></a>
+                        }
+                    </div>
+                </div>
+                <div id='postReply@post.idPost' class="border p-3 bg-lightblue" style="display: none;">
+                    <div class="row">
+                        <div class="col-md-12">
+                          <textarea type="text" id='textReply@post.idPost' class="form-control" placeholder="Write a comment .." rows="3"></textarea>
+                        </div>
+                        <div class="col-md-12 mt-2">
+                          <a onclick='submitReply(@post.idPost)' class="btn btn-success btn-block">Send</a>
+                        </div>
+                    </div>
+                </div>
+                <div id='commentPost@post.idPost' class="card-body px-0 pb-0 d-flex flex-column align-items-start"></div>
+            </div>
+        }
+        </div>
+        <div class="col-lg-4">
+            <br>
+            <div class="flex-md-row mb-4 box-shadow h-xl-300">
+                <h2 class="mb-2 h6 font-weight-bold">
+                    <p class="text-dark">Following users:</p>
+                </h2>
+                <div class="mb-3 d-flex align-items-center">
+                    <div class="pl-3">
+                        <div class="card-text text-muted small">
+                            @for(user <- follows) {
+                            <a class="text-dark" href=@routes.ProfileController.userProfile(user.FollowUser)>@user.FollowUser</a>
+                            <br>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src='@routes.Assets.versioned("javascripts/personalFunctions.js")'></script>
+}

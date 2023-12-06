@@ -1,0 +1,62 @@
+@* template of the sign up - register page*@
+@(formSignUp: Form[User], postUrl: Call)(implicit session: Session, request: MessagesRequestHeader, flash: Flash)
+
+@main("Sign Up", session) {
+<div class="container pt-4 pb-4">
+
+    <h2 class="h4 font-weight-bold">CREATE AN ACCOUNT</h2>
+    @helper.form(postUrl) {
+
+    @helper.CSRF.formField
+    <div class="row form-group">
+        <div class="col">
+        @helper.inputText(
+            formSignUp("Name"),
+            Symbol("label") -> "name",
+            Symbol("class") -> "form-control",
+            Symbol("placeholder") -> "First name",
+            Symbol("id") -> "name"
+            )
+        </div>
+        <div class="col">
+        @helper.inputText(
+            formSignUp("Last name"),
+            Symbol("label") -> "Last name",
+            Symbol("class") -> "form-control",
+            Symbol("placeholder") -> "Last name",
+            Symbol("id") -> "lastName"
+            )
+        </div>
+    </div>
+    @helper.inputText(
+    formSignUp("Email"),
+    Symbol("class") -> "form-control",
+    Symbol("placeholder") -> "Enter an email",
+    Symbol("id") -> "email"
+    )
+    @helper.inputText(
+    formSignUp("Username"),
+    Symbol("label") -> "Username",
+    Symbol("class") -> "form-control",
+    Symbol("placeholder") -> "Enter a user name",
+    Symbol("id") -> "username"
+    )
+    @helper.inputPassword(
+    formSignUp("Password"),
+    Symbol("label") -> "Password",
+    Symbol("class") -> "form-control",
+    Symbol("placeholder") -> "Enter a Password",
+    Symbol("id") -> "password"
+    )
+    <div class="form-group form-check">
+        <input type="checkbox" class="form-check-input" id="exampleCheck1">
+        <label class="form-check-label" for="exampleCheck1">I accept all conditions</label>
+    </div>
+    <div class="form-action">
+        <button type="submit" class="btn btn-success btn-round">Sign Up</button>
+    </div>
+
+    }
+</div>
+}
+
